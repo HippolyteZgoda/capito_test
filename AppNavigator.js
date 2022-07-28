@@ -7,11 +7,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import theme from './themes/DraftbitTheme.js';
 
+import HomeCopyScreen from './screens/HomeCopyScreen';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
-import PersonalFinanceHomeScreen from './screens/PersonalFinanceHomeScreen';
+import PortefeuilleScreen from './screens/PortefeuilleScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import STARTHEREScreen from './screens/STARTHEREScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -81,14 +81,14 @@ export default function RootAppNavigator() {
           }}
         />
         <Stack.Screen
-          name="STARTHEREScreen"
-          component={STARTHEREScreen}
-          options={{ headerShown: false, title: 'START HERE' }}
+          name="PortefeuilleScreen"
+          component={PortefeuilleScreen}
+          options={{ title: 'Porte-feuille' }}
         />
         <Stack.Screen
-          name="PersonalFinanceHomeScreen"
-          component={PersonalFinanceHomeScreen}
-          options={{ title: 'Personal Finance - Home' }}
+          name="HomeCopyScreen"
+          component={HomeCopyScreen}
+          options={{ title: 'Home Copy' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

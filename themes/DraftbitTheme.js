@@ -11,7 +11,7 @@ export default {
     darken: 'rgba(0, 0, 0, 0.1)',
     divider: 'rgba(234, 237, 242, 1)',
     error: 'rgba(255, 69, 100, 1)',
-    light: 'rgba(165, 173, 183, 1)',
+    light: 'rgb(16, 124, 3)',
     lightInverse: 'rgba(255, 255, 255, 0.68)',
     lighten: 'rgba(255, 255, 255, 0.1)',
     medium: 'rgba(70, 78, 88, 1)',

@@ -1,5 +1,5 @@
 import React from 'react';
-import * as XanoApi from '../apis/XanoApi.js';
+import * as AUTHApi from '../apis/AUTHApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import {
@@ -25,6 +25,24 @@ const LoginScreen = props => {
     console.log(JSON.stringify(response));
   };
 
+  const ParseJSON = async response => {
+    // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+    return response.json();
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
+
+  const getXanoAuthToken = json => {
+    // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+    return 'authToken' in json ? 'Bearer' + json['authToken'] : 'false';
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
+
   const { theme } = props;
   const { navigation } = props;
 
@@ -34,10 +52,9 @@ const LoginScreen = props => {
       if (!isFocused) {
         return;
       }
-      if (!Constants['auth_header']) {
+      if (!Constants['AUTHORIZATION_HEADER']) {
         return;
       }
-      navigation.navigate('HomeScreen');
     } catch (err) {
       console.error(err);
     }
@@ -47,7 +64,7 @@ const LoginScreen = props => {
   const [passwordValue, setPasswordValue] = React.useState('');
 
   return (
-    <ScreenContainer>
+    <ScreenContainer hasTopSafeArea={true}>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.KeyboardAwareScrollView_3bContent}
       >
@@ -76,8 +93,8 @@ const LoginScreen = props => {
               }
             }}
             style={[styles.TextInputru, { borderColor: theme.colors.divider }]}
+            placeholder={emailValue}
             value={emailValue}
-            placeholder={'Email'}
             keyboardType={'email-address'}
             textContentType={'emailAddress'}
             autoCapitalize={'none'}
@@ -92,63 +109,34 @@ const LoginScreen = props => {
               }
             }}
             style={[styles.TextInputdj, { borderColor: theme.colors.divider }]}
+            placeholder={passwordValue}
             value={passwordValue}
-            placeholder={'Password'}
             secureTextEntry={true}
           />
           <Spacer top={24} right={8} bottom={24} left={8} />
           <>
-            {Constants['is_loading'] ? null : (
+            {!Constants['is_loading'] ? null : (
               <ButtonSolid
                 onPress={async () => {
                   try {
-                    setGlobalVariableValue({
-                      key: 'is_loading',
-                      value: true,
-                    });
-                    const response = await XanoApi.loginPOST(Constants, {
-                      email: emailValue,
-                      password: passwordValue,
-                    });
-                    const authToken = response.authToken;
-                    const message = response.message;
+                    const LoginResponseJson = await AUTHApi.loginPOST(
+                      Constants,
+                      { email: emailValue, password: passwordValue }
+                    );
+                    const message = LoginResponseJson.message;
                     setGlobalVariableValue({
                       key: 'error_message',
                       value: message,
                     });
-                    setGlobalVariableValue({
-                      key: 'is_loading',
-                      value: false,
-                    });
-                    if (!authToken) {
+
+                    if (authToken) {
                       return;
                     }
-                    const id = response.id;
-                    const name = response.name;
-                    const email = response.email;
                     setGlobalVariableValue({
-                      key: 'auth_header',
+                      key: 'AUTHORIZATION_HEADER',
                       value: 'Bearer ' + authToken,
                     });
-                    setGlobalVariableValue({
-                      key: 'user_id',
-                      value: id,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_name',
-                      value: name,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_email',
-                      value: email,
-                    });
-                    setEmailValue('');
-                    setPasswordValue('');
-                    setGlobalVariableValue({
-                      key: 'error_message',
-                      value: '',
-                    });
-                    navigation.navigate('HomeScreen');
+                    navigation.navigate('PortefeuilleScreen');
                   } catch (err) {
                     console.error(err);
                   }
@@ -157,13 +145,20 @@ const LoginScreen = props => {
                   styles.ButtonSolidNX,
                   { backgroundColor: theme.colors.primary },
                 ]}
-                title={'Sign in'}
+                title={'Login'}
               />
             )}
           </>
           <>
-            {!Constants['is_loading'] ? null : (
+            {Constants['is_loading'] ? null : (
               <ButtonSolid
+                onPress={() => {
+                  try {
+                    navigation.navigate('PortefeuilleScreen');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
                 style={[
                   styles.ButtonSolidju,
                   { backgroundColor: theme.colors.primary },

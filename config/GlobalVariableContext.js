@@ -8,6 +8,9 @@ const DeviceVariables = {
   user_id: 'THIS SHOULD BE CHANGED',
   user_name: 'THIS SHOULD BE CHANGED',
   user_email: 'THIS SHOULD BE CHANGED',
+  Balance: 2300,
+  Invested: 2000,
+  AUTHORIZATION_HEADER: '',
 };
 const AppVariables = {
   error_message: 'THIS SHOULD BE CHANGED',

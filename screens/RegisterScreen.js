@@ -1,5 +1,5 @@
 import React from 'react';
-import * as XanoApi from '../apis/XanoApi.js';
+import * as AUTHApi from '../apis/AUTHApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import {
   ButtonSolid,
@@ -27,10 +27,9 @@ const RegisterScreen = props => {
       if (!isFocused) {
         return;
       }
-      if (!Constants['auth_header']) {
+      if (!Constants['AUTHORIZATION_HEADER']) {
         return;
       }
-      navigation.navigate('HomeScreen');
     } catch (err) {
       console.error(err);
     }
@@ -108,55 +107,28 @@ const RegisterScreen = props => {
           />
           <Spacer top={24} right={8} bottom={24} left={8} />
           <>
-            {Constants['is_loading'] ? null : (
+            {!Constants['is_loading'] ? null : (
               <ButtonSolid
                 onPress={async () => {
                   try {
-                    setGlobalVariableValue({
-                      key: 'is_loading',
-                      value: true,
-                    });
-                    const response = await XanoApi.signUpPOST(Constants, {
-                      email: emailValue,
-                      name: nameValue,
-                      password: passwordValue,
-                    });
-                    const authToken = response.authToken;
-                    const message = response.message;
+                    const signuoResponseJson = await AUTHApi.signupPOST(
+                      Constants,
+                      { email: emailValue, password: passwordValue }
+                    );
+                    const message = signuoResponseJson.message;
                     setGlobalVariableValue({
                       key: 'error_message',
                       value: message,
                     });
-                    setGlobalVariableValue({
-                      key: 'is_loading',
-                      value: false,
-                    });
+                    const authToken = signuoResponseJson.authToken;
                     if (!authToken) {
                       return;
                     }
-                    const id = response.id;
-                    const name = response.name;
-                    const email = response.email;
                     setGlobalVariableValue({
-                      key: 'auth_header',
+                      key: 'AUTHORIZATION_HEADER',
                       value: 'Bearer ' + authToken,
                     });
-                    setGlobalVariableValue({
-                      key: 'user_id',
-                      value: id,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_name',
-                      value: name,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_email',
-                      value: email,
-                    });
-                    setEmailValue('');
-                    setNameValue('');
-                    setPasswordValue('');
-                    navigation.navigate('HomeScreen');
+                    navigation.navigate('PortefeuilleScreen');
                   } catch (err) {
                     console.error(err);
                   }
@@ -170,8 +142,15 @@ const RegisterScreen = props => {
             )}
           </>
           <>
-            {!Constants['is_loading'] ? null : (
+            {Constants['is_loading'] ? null : (
               <ButtonSolid
+                onPress={() => {
+                  try {
+                    navigation.navigate('PortefeuilleScreen');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
                 style={[
                   styles.ButtonSolidCI,
                   { backgroundColor: theme.colors.primary },

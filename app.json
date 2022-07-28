@@ -3,7 +3,7 @@
     "name": "Capito",
     "slug": "capito",
     "scheme": "capito",
-    "description": "Xano Authentication Starter App - includes Login Registration and Home screens",
+    "description": "Capito, powered by Draftbit",
     "privacy": "unlisted",
     "platforms": [
       "ios",
